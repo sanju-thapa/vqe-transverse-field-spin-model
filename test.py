@@ -1,9 +1,8 @@
 from src.vqe_tfim.hamiltonian import build_hamiltonian
-from src.vqe_tfim.ansatz import shallow_ansatz
+from src.vqe_tfim.optimizer import run_vqe
 
 H = build_hamiltonian(J=1, h=0.5)
-print(H)
+theta_final, history = run_vqe(H)
 
-theta = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
-qc = shallow_ansatz(theta)
-print(qc)
+print("Final energy:", history[-1])
+print("Number of iterations recorded:", len(history))
