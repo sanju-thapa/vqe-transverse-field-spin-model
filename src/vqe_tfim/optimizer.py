@@ -1,17 +1,14 @@
 import numpy as np
 from qiskit.quantum_info import Statevector
-from .ansatz import shallow_ansatz
 
 
-def energy(theta, hamiltonian):
-    """Compute <psi(theta)|H|psi(theta)> for the given parameters."""
-    qc = shallow_ansatz(theta)
+def energy(theta, hamiltonian, ansatz_fn):
+    qc = ansatz_fn(theta)
     state = Statevector(qc)
     return state.expectation_value(hamiltonian).real
 
 
-def parameter_shift_gradient(theta, hamiltonian):
-    """Estimate the gradient of the energy using the parameter-shift rule."""
+def parameter_shift_gradient(theta, hamiltonian, ansatz_fn):
     shift = np.pi / 2
     grad = np.zeros(len(theta))
 
@@ -22,21 +19,24 @@ def parameter_shift_gradient(theta, hamiltonian):
         theta_minus = theta.copy()
         theta_minus[i] -= shift
 
-        grad[i] = 0.5 * (energy(theta_plus, hamiltonian) - energy(theta_minus, hamiltonian))
+        grad[i] = 0.5 * (
+            energy(theta_plus, hamiltonian, ansatz_fn) -
+            energy(theta_minus, hamiltonian, ansatz_fn)
+        )
 
     return grad
 
 
-def run_vqe(hamiltonian, n_params=6, iterations=100, learning_rate=0.05):
-    """Run gradient descent VQE and return the final parameters and energy history."""
-    theta = np.random.uniform(0, 2 * np.pi, n_params)
+def run_vqe(hamiltonian, ansatz_fn, n_params, iterations=300, learning_rate=0.05, seed=42):
+    rng = np.random.default_rng(seed)
+    theta = rng.uniform(0, 2 * np.pi, n_params)
     energy_history = []
 
     for step in range(iterations):
-        e = energy(theta, hamiltonian)
+        e = energy(theta, hamiltonian, ansatz_fn)
         energy_history.append(e)
 
-        grad = parameter_shift_gradient(theta, hamiltonian)
+        grad = parameter_shift_gradient(theta, hamiltonian, ansatz_fn)
         theta = theta - learning_rate * grad
 
     return theta, energy_history
