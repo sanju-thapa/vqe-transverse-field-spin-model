@@ -69,7 +69,7 @@ colors = ['#2ecc71', '#e67e22', '#3498db']
 bars = ax.bar(labels, values, color=colors, width=0.5, edgecolor='white', linewidth=1.2)
 ax.set_ylabel("Ground State Energy")
 ax.set_title("Ansatz Expressibility Gap\n3-Qubit TFIM (J=1, h=0.5)", fontweight='bold')
-ax.set_ylim([min(values) - 0.1, 0])
+ax.set_ylim([min(values) - 0.05, max(values) + 0.05])
 ax.grid(True, axis='y', alpha=0.3)
 
 for bar, val in zip(bars, values):
