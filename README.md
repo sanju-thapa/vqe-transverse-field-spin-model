@@ -40,6 +40,14 @@ optimization failure.
 ### Energy vs Magnetic Field
 ![Field Sweep](energy_vs_field.png)
 
+## Circuit Diagrams
+
+### Shallow Ansatz (6 parameters)
+![Shallow Ansatz](shallow_ansatz_circuit.png)
+
+### Expressive Ansatz (9 parameters)
+![Expressive Ansatz](expressive_ansatz_circuit.png)
+
 ## Setup
 
 ```bash
