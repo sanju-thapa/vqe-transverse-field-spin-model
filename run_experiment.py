@@ -80,29 +80,35 @@ plt.tight_layout()
 plt.savefig("expressibility_gap.png", dpi=150, bbox_inches='tight')
 print("  Saved: expressibility_gap.png")
 
-# ── Plot 3: Magnetic field sweep ───────────────────────────────────────────
+# ── Plot 3: Magnetic field sweep (shallow AND expressive) ────────────────
 h_values = np.linspace(0, 2, 10)
 exact_energies = []
 vqe_shallow_energies = []
+vqe_expressive_energies = []
 
-print("\n  Running magnetic field sweep...")
+print("\n  Running magnetic field sweep (shallow + expressive)...")
 for h_val in h_values:
     H_h = build_hamiltonian(J=1, h=h_val)
     exact_energies.append(exact_ground_state(H_h))
-    _, hist = run_vqe(H_h, ansatz_fn=shallow_ansatz, n_params=6)
-    vqe_shallow_energies.append(hist[-1])
+    _, hist_s = run_vqe(H_h, ansatz_fn=shallow_ansatz, n_params=6)
+    vqe_shallow_energies.append(hist_s[-1])
+    _, hist_e = run_vqe(H_h, ansatz_fn=expressive_ansatz, n_params=9)
+    vqe_expressive_energies.append(hist_e[-1])
 
 fig3, ax = plt.subplots(figsize=(8, 5))
 ax.plot(h_values, exact_energies, 'r--', linewidth=2, label='Exact')
 ax.plot(h_values, vqe_shallow_energies, 'o-', color='steelblue',
-        linewidth=2, markersize=5, label='VQE (shallow)')
+        linewidth=2, markersize=5, label='VQE (shallow, 6 params)')
+ax.plot(h_values, vqe_expressive_energies, 's-', color='darkorange',
+        linewidth=2, markersize=5, label='VQE (expressive, 9 params)')
 ax.set_xlabel("Magnetic Field (h)", fontsize=12)
 ax.set_ylabel("Ground State Energy", fontsize=12)
-ax.set_title("Energy vs Magnetic Field — 3-Qubit TFIM", fontweight='bold')
+ax.set_title("Energy vs Magnetic Field — 3-Qubit TFIM\nShallow vs Expressive Ansatz",
+             fontweight='bold')
 ax.legend()
 ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.savefig("energy_vs_field.png", dpi=150, bbox_inches='tight')
-print("  Saved: energy_vs_field.png")
+print("  Saved: energy_vs_field.png (now includes both ansatzes)")
 print("\n  Done.")
