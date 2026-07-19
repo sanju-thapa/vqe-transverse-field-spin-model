@@ -10,6 +10,7 @@ ansatz expressibility and hardware noise on ground-state energy estimation.
 - Noisy results via a FakeManilaV2 (real IBM hardware calibration snapshot) noise model
 
 ## Key Results
+
 | | Final Energy | Gap vs Exact |
 |---|---|---|
 | Exact diagonalization | -2.4032 | — |
@@ -24,20 +25,36 @@ the deeper circuit's extra entangling layer accumulates more gate error,
 making the simpler ansatz more noise-resilient despite being less accurate
 in the ideal case.
 
+### Ansatz expressibility gap (noiseless)
+![Expressibility gap](expressibility_gap.png)
+
+### Energy convergence (noiseless)
+![Convergence comparison](convergence_comparison.png)
+
+### Energy vs magnetic field, both ansatzes
+![Energy vs field](energy_vs_field.png)
+
+### Noisy vs noiseless convergence, shallow vs expressive
+![Noise comparison](noise_comparison_both.png)
+
 ## Structure
 - `src/vqe_tfim/` — Hamiltonian, ansatz circuits, optimizer, noise model
 - `run_experiment.py` — noiseless VQE, convergence plots, field sweep
 - `run_noise_experiment.py` — noisy VQE comparison (both ansatzes)
 
 ## Setup
+```
 pip install -r requirements.txt
 pip install qiskit-aer qiskit-ibm-runtime   # for noise simulation
+```
 
 ## Usage
+```
 python run_experiment.py
 python run_noise_experiment.py
+```
 
 ## Notes
 - Noisy results use finite-shot (512 shots) measurement and are
-  stochastic — expect small run-to-run variation.
+  stochastic — expect small run-to-run variation between runs.
 - FakeManilaV2 is a static calibration snapshot, not a live hardware connection.
